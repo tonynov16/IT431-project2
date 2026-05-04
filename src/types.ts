@@ -19,7 +19,7 @@ export type View = 'home' | 'list' | 'signin' | 'signup';
 //   description: string;
 // }
 
-export interface Product {
+export interface Album {
   id: number;
   created_at: string;
   user_id: string;
