@@ -24,4 +24,10 @@ export interface Product {
   created_at: string;
   user_id: string;
   // TODO: add your 5+ fields here
+  title: string; 
+  artist: string;
+  genre: string;
+  release_year: number;
+  track_count: number;
+  label?: string; 
 }

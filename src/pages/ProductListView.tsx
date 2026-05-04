@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import type { Product } from '../types';
+import type { Album } from '../types';
 import ProductForm from '../components/ProductForm';
 
 interface Props {
@@ -9,11 +9,11 @@ interface Props {
 }
 
 export default function ProductListView({ user }: Props) {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Album[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
-  const [editing, setEditing] = useState<Product | null>(null);
+  const [editing, setEditing] = useState<Album| null>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -26,47 +26,47 @@ export default function ProductListView({ user }: Props) {
     // TODO: Replace 'products' with your actual table name, and replace
     // Product with your type. Order however makes sense for your data.
     //
-    // const { data, error } = await supabase
-    //   .from('products')
-    //   .select('*')
-    //   .order('created_at', { ascending: false });
-    //
-    // if (error) setError(error.message);
-    // else setProducts(data ?? []);
+    const { data, error } = await supabase
+      .from('albums')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) setError(error.message);
+      else setProducts(data ?? []);
 
     setLoading(false);
   }
 
-  async function handleAdd(data: Partial<Product>) {
+  async function handleAdd(data: Partial<Album>) {
     if (!user) return;
 
     // TODO: Insert into your table. Remember to include user_id so your
     // RLS policy can check ownership on later updates/deletes.
     //
-    // const { error } = await supabase
-    //   .from('products')
-    //   .insert([{ ...data, user_id: user.id }]);
-    //
-    // if (error) { alert(error.message); return; }
-    // setShowForm(false);
-    // fetchProducts();
+    const { error } = await supabase
+      .from('albums')
+      .insert([{ ...data, user_id: user.id }]);
+    
+    if (error) { alert(error.message); return; }
+      setShowForm(false);
+      fetchProducts();
 
     console.log('Add:', data);
   }
 
-  async function handleEdit(data: Partial<Product>) {
+  async function handleEdit(data: Partial<Album>) {
     if (!editing) return;
 
     // TODO: Update the row by id.
     //
-    // const { error } = await supabase
-    //   .from('products')
-    //   .update(data)
-    //   .eq('id', editing.id);
-    //
-    // if (error) { alert(error.message); return; }
-    // setEditing(null);
-    // fetchProducts();
+    const { error } = await supabase
+      .from('albums')
+      .update(data)
+      .eq('id', editing.id);
+    
+    if (error) { alert(error.message); return; }
+      setEditing(null);
+      fetchProducts();
 
     console.log('Edit:', editing.id, data);
   }
@@ -76,9 +76,9 @@ export default function ProductListView({ user }: Props) {
 
     // TODO: Delete the row by id.
     //
-    // const { error } = await supabase.from('products').delete().eq('id', id);
-    // if (error) { alert(error.message); return; }
-    // fetchProducts();
+    const { error } = await supabase.from('albums').delete().eq('id', id);
+    if (error) { alert(error.message); return; }
+      fetchProducts();
 
     console.log('Delete:', id);
   }
@@ -102,7 +102,7 @@ export default function ProductListView({ user }: Props) {
   return (
     <div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-        <h1 style={{ flex: 1 }}>Products</h1>
+        <h1 style={{ flex: 1 }}>Albums</h1>
         {/* Only signed-in users see the Add button. RLS enforces the real rule
             at the database level — this UI check just hides the affordance. */}
         {user && (
@@ -119,14 +119,18 @@ export default function ProductListView({ user }: Props) {
       ) : (
         products.map((p) => (
           <div key={p.id} className="card">
-            {/* TODO: Render all of your fields here.
-                Example:
-                <h3>{p.title}</h3>
-                <p>{p.description}</p>
-                <p>Platform: {p.platform} · Rating: {p.rating}/10</p>
-            */}
-            <p>Product #{p.id}</p>
+            <h3>{p.title}</h3>
 
+            <p><strong>Artist:</strong> {p.artist}</p>
+            <p><strong>Genre:</strong> {p.genre}</p>
+
+            <p>
+              <strong>Year:</strong> {p.release_year}
+              <strong> Tracks:</strong> {p.track_count}
+            </p>
+
+            <p><strong>Music Label:</strong> {p.label}</p>
+        
             {user && (
               <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
                 <button onClick={() => setEditing(p)}>Edit</button>

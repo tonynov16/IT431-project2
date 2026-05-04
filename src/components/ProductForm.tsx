@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import type { Product } from '../types';
+import type { Album } from '../types';
 
 interface Props {
-  product: Product | null;
-  onSave: (data: Partial<Product>) => void;
+  product: Album | null;
+  onSave: (data: Partial<Album>) => void;
   onCancel: () => void;
 }
 
@@ -11,9 +11,12 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
   // TODO: Add one useState per field in your Product type. When editing, seed
   // each state value from `product` so the form is pre-populated.
   //
-  // Example:
-  // const [title, setTitle] = useState(product?.title ?? '');
-  // const [rating, setRating] = useState(product?.rating ?? 0);
+  const [title, setTitle] = useState(product?.title ?? '');
+  const [artist, setArtist] = useState(product?.artist ?? '');
+  const [genre, setGenre] = useState(product?.genre ?? '');
+  const [release_year, setReleaseYear] = useState(product?.release_year ?? '');
+  const [track_count, setTrackCount] = useState(product?.track_count ?? '');
+  const [label, setLabel] = useState(product?.label ?? '');
 
   const [error, setError] = useState<string | null>(null);
 
@@ -22,14 +25,29 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
     setError(null);
 
     // TODO: Validate required fields, then call onSave with them.
-    //
-    // if (!title.trim()) {
-    //   setError('Title is required');
-    //   return;
-    // }
-    // onSave({ title, rating, ... });
+    if (!title.trim()) {
+      setError('Title is required');
+      return;
+    }
 
-    onSave({});
+    if (!artist.trim()) {
+      setError('Artist is required');
+      return;
+    }
+
+    if (!genre.trim()) {
+      setError('Genre is required');
+      return;
+    }
+    // onSave({ title, rating, ... });
+    onSave({
+      title,
+      artist,
+      genre,
+      release_year: release_year ? Number(release_year) : null,
+      track_count: track_count ? Number(track_count) : null,
+      label: label?.trim() || null
+    });
   }
 
   return (
@@ -38,7 +56,7 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
       {error && <p className="error">{error}</p>}
 
       <form onSubmit={handleSubmit} style={{ maxWidth: 520 }}>
-        {/* TODO: Add one labeled <input> per field.
+        {/* TODO: Add one labeled <input> per field. */}
 
             <label>
               Title
@@ -51,16 +69,52 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
             </label>
 
             <label>
-              Rating
+              Artist
               <input
-                type="number"
-                min={0}
-                max={10}
-                value={rating}
-                onChange={(e) => setRating(Number(e.target.value))}
-              />
+                type='text'
+                value={artist}
+                onChange={(e) => setArtist(e.target.value)}
+                required
+                />
             </label>
-        */}
+
+            <label>
+              Genre
+              <input 
+                type='text'
+                value={genre}
+                onChange={(e) => setGenre(e.target.value)}
+                required
+                />
+            </label>
+
+            <label>
+              Release Year 
+                <input
+                  type='number'
+                  value={release_year}
+                  onChange={(e) => setReleaseYear(e.target.value)}
+                  />
+            </label>
+
+            <label>
+              Track Count 
+                <input
+                  type='number'
+                  value={track_count}
+                  onChange={(e) => setTrackCount(e.target.value)}
+                  />
+            </label>
+
+            <label>
+              Music Label
+              <input 
+                type='text'
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                required
+                />
+            </label>
 
         <div style={{ display: 'flex', gap: 8, marginTop: 12 }}>
           <button className="primary" type="submit">
