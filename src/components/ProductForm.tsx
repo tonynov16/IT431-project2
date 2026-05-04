@@ -94,6 +94,8 @@ export default function ProductForm({ product, onSave, onCancel }: Props) {
                   type='number'
                   value={release_year}
                   onChange={(e) => setReleaseYear(e.target.value)}
+                  min={1800}
+                  max={new Date().getFullYear()}
                   />
             </label>
 
