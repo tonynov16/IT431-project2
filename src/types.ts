@@ -19,7 +19,7 @@ export type View = 'home' | 'list' | 'signin' | 'signup';
 //   description: string;
 // }
 
-export interface Product {
+export interface Album {
   id: number;
   created_at: string;
   user_id: string;
@@ -27,7 +27,7 @@ export interface Product {
   title: string; 
   artist: string;
   genre: string;
-  release_year: number;
-  track_count: number;
-  label?: string; 
+  release_year: number | null;
+  track_count: number | null;
+  label?: string | null; 
 }
